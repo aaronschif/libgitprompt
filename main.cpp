@@ -28,6 +28,8 @@ struct GitStatus{
     const char *branch = NULL;
 };
 
+#include "format.cpp"
+
 void print_debug(GitStatus *status) {
     cout << "Index files:   " << status->index_files << '\n';
     cout << "New files:     " << status->new_files << '\n';
@@ -37,27 +39,6 @@ void print_debug(GitStatus *status) {
     cout << "Behind:        " << status->behind << '\n';
     cout << "Stash:         " << status->stash << '\n';
     cout << "State:         " << status->state <<'\n';
-}
-
-void print_prompt(GitStatus *status) {
-    if (status->new_files)
-        cout << status->new_files << ICON_NEW;
-    if (status->index_files)
-        cout << status->index_files << ICON_INDEX;
-    if (status->working_files)
-        cout << status->working_files << ICON_WORKING;
-    if (status->branch != NULL)
-        cout << status->branch;
-    else
-        cout << ICON_NOBRANCH;
-    if (status->ahead)
-        cout << status->ahead << ICON_AHEAD;
-    if (status->behind)
-        cout << status->behind << ICON_BEHIND;
-    if (status->stash)
-        cout << status->stash << ICON_STASH;
-    if (status->state)
-        cout << ICON_STATE;
 }
 
 void get_branch(git_repository *repo, GitStatus *status) {
@@ -143,6 +124,6 @@ int main(int argc, char *argv[]) {
     get_repo_state(repo, &status);
     get_remote_diffs(repo, &status);
     get_stash_state(repo, &status);
-    // print_debug(&status);
-    print_prompt(&status);
+
+    get_config(repo, &status);
 }
